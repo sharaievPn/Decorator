@@ -8,12 +8,12 @@ import java.sql.ResultSet;
 
 public class CachedDocument implements Document {
     private Document wrappedDocument;
-    private static final String DB_URL =
-            "jdbc:sqlite:/Users/bitcoin/UCU/JavaProjects/Java_OOP/Decorator/BD/QueriesBD";
 
     public CachedDocument(Document document) {
         this.wrappedDocument = document;
     }
+    private static final String DB_URL =
+            "jdbc:sqlite:/Users/bitcoin/UCU/JavaProjects/Java_OOP/Decorator/BD/QueriesBD";
 
     @Override
     public String parse() {
@@ -29,13 +29,13 @@ public class CachedDocument implements Document {
     }
 
     private String getCachedResult(String url) {
-        try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.
+        try (Connection Conn = DriverManager.getConnection(DB_URL);
+             PreparedStatement PS = Conn.
                      prepareStatement("SELECT result FROM url_requests WHERE url = ?")) {
-            preparedStatement.setString(1, url);
-            try (ResultSet rs = preparedStatement.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("result");
+            PS.setString(1, url);
+            try (ResultSet RS = PS.executeQuery()) {
+                if (RS.next()) {
+                    return RS.getString("result");
                 }
             }
         } catch (SQLException e) {
@@ -45,12 +45,14 @@ public class CachedDocument implements Document {
     }
 
     private void saveToCache(String url, String result) {
-        try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.
-                     prepareStatement("INSERT INTO url_requests (url, result) VALUES (?, ?)")) {
-            preparedStatement.setString(1, url);
-            preparedStatement.setString(2, result);
-            preparedStatement.executeUpdate();
+        try (Connection Conn = DriverManager.getConnection(DB_URL);
+             PreparedStatement PS =
+                     Conn.prepareStatement
+                             ("INSERT INTO url_requests (url, result) " +
+                                     "VALUES (?, ?)")) {
+            PS.setString(1, url);
+            PS.setString(2, result);
+            PS.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -59,7 +61,7 @@ public class CachedDocument implements Document {
     public String getGcsPath() {
         if (wrappedDocument instanceof SmartDocument) {
             SmartDocument smartDoc = (SmartDocument) wrappedDocument;
-            return smartDoc.gcsPath;
+            return smartDoc.getGcsPath();
         }
         return null;
     }
