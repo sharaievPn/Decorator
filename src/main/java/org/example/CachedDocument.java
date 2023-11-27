@@ -7,13 +7,14 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 
 public class CachedDocument implements Document {
+    private static final String DB_URL =
+            "jdbc:sqlite:/Users/bitcoin/UCU/"
+                    + "JavaProjects/Java_OOP/Decorator/BD/QueriesBD";
     private Document wrappedDocument;
 
     public CachedDocument(Document document) {
         this.wrappedDocument = document;
     }
-    private static final String DB_URL =
-            "jdbc:sqlite:/Users/bitcoin/UCU/JavaProjects/Java_OOP/Decorator/BD/QueriesBD";
 
     @Override
     public String parse() {
@@ -29,9 +30,10 @@ public class CachedDocument implements Document {
     }
 
     private String getCachedResult(String url) {
-        try (Connection Conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement PS = Conn.
-                     prepareStatement("SELECT result FROM url_requests WHERE url = ?")) {
+        try (Connection CONN = DriverManager.getConnection(DB_URL);
+             PreparedStatement PS = CONN.
+                     prepareStatement("SELECT result FROM "
+                             + "url_requests WHERE url = ?")) {
             PS.setString(1, url);
             try (ResultSet RS = PS.executeQuery()) {
                 if (RS.next()) {
@@ -45,11 +47,11 @@ public class CachedDocument implements Document {
     }
 
     private void saveToCache(String url, String result) {
-        try (Connection Conn = DriverManager.getConnection(DB_URL);
+        try (Connection CONN = DriverManager.getConnection(DB_URL);
              PreparedStatement PS =
-                     Conn.prepareStatement
-                             ("INSERT INTO url_requests (url, result) " +
-                                     "VALUES (?, ?)")) {
+                     CONN.prepareStatement("INSERT INTO u"
+                             + "rl_requests (url, result) "
+                                     + "VALUES (?, ?)")) {
             PS.setString(1, url);
             PS.setString(2, result);
             PS.executeUpdate();
