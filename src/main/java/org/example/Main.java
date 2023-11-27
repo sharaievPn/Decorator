@@ -28,12 +28,5 @@ public class Main {
         System.out.println(cd.parse());
         System.out.println();
         System.out.println(cdOne.parse());
-        System.out.println();
-        System.out.println(cdOne);
-        System.out.println();
-        System.out.println(cd.parse());
-        System.out.println();
-        System.out.println(cdOne.parse());
-        System.out.println();
     }
 }
