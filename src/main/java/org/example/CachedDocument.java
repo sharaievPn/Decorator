@@ -8,7 +8,8 @@ import java.sql.ResultSet;
 
 public class CachedDocument implements Document {
     private Document wrappedDocument;
-    private static final String DB_URL = "jdbc:sqlite:/Users/bitcoin/UCU/JavaProjects/Java_OOP/Decorator/BD/QueriesBD";
+    private static final String DB_URL =
+            "jdbc:sqlite:/Users/bitcoin/UCU/JavaProjects/Java_OOP/Decorator/BD/QueriesBD";
 
     public CachedDocument(Document document) {
         this.wrappedDocument = document;
@@ -28,10 +29,11 @@ public class CachedDocument implements Document {
     }
 
     private String getCachedResult(String url) {
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement("SELECT result FROM url_requests WHERE url = ?")) {
-            pstmt.setString(1, url);
-            try (ResultSet rs = pstmt.executeQuery()) {
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.
+                     prepareStatement("SELECT result FROM url_requests WHERE url = ?")) {
+            preparedStatement.setString(1, url);
+            try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next()) {
                     return rs.getString("result");
                 }
@@ -43,11 +45,12 @@ public class CachedDocument implements Document {
     }
 
     private void saveToCache(String url, String result) {
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             PreparedStatement pstmt = conn.prepareStatement("INSERT INTO url_requests (url, result) VALUES (?, ?)")) {
-            pstmt.setString(1, url);
-            pstmt.setString(2, result);
-            pstmt.executeUpdate();
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.
+                     prepareStatement("INSERT INTO url_requests (url, result) VALUES (?, ?)")) {
+            preparedStatement.setString(1, url);
+            preparedStatement.setString(2, result);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
